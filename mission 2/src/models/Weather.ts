@@ -1,6 +1,9 @@
 export interface CityRecord {
   city_name_he: string
   city_name_en: string
+  piba_bureau_code?: string
+  piba_bureau_name?: string
+  region_name?: string
 }
 
 export interface WeatherCondition {
@@ -22,6 +25,12 @@ export interface WeatherLocation {
 export interface WeatherData {
   location: WeatherLocation
   current: WeatherCurrent
+}
+
+export interface WeatherDataWithFallback extends WeatherData {
+  fallbackLocation?: string
+  fallbackSource?: 'piba' | 'search'
+  fallbackBureauCode?: string
 }
 
 export interface SearchHistoryItem {

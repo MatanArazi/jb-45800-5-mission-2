@@ -1,6 +1,10 @@
 import { useEffect, useState, type ChangeEvent } from 'react'
 import { fetchCities, fetchWeather } from '../../services/api'
-import type { CityRecord, SearchHistoryItem, WeatherData } from '../../models/Weather'
+import type {
+  CityRecord,
+  SearchHistoryItem,
+  WeatherDataWithFallback,
+} from '../../models/Weather'
 
 const STORAGE_KEY = 'weather-search-history'
 
@@ -25,7 +29,7 @@ function saveHistory(history: SearchHistoryItem[]) {
 export default function Home() {
   const [cities, setCities] = useState<CityRecord[]>([])
   const [selectedCity, setSelectedCity] = useState('')
-  const [weather, setWeather] = useState<WeatherData | null>(null)
+  const [weather, setWeather] = useState<WeatherDataWithFallback | null>(null)
   const [history, setHistory] = useState<SearchHistoryItem[]>([])
   const [loadingCities, setLoadingCities] = useState(false)
   const [loadingWeather, setLoadingWeather] = useState(false)
@@ -67,7 +71,10 @@ export default function Home() {
     setLoadingWeather(true)
 
     try {
-      const data = await fetchWeather(cityEn)
+      const data = await fetchWeather(cityEn, {
+        piba_bureau_code: selectedRecord?.piba_bureau_code,
+        piba_bureau_name: selectedRecord?.piba_bureau_name,
+      })
       setWeather(data)
 
       const item: SearchHistoryItem = {
@@ -120,6 +127,21 @@ export default function Home() {
         {error && <p className="error-message">{error}</p>}
 
         {loadingWeather && <p className="status-message">Loading weather...</p>}
+
+        {weather?.fallbackLocation && (
+          <p className="status-message">
+            {weather.fallbackSource === 'piba' && (
+              <>
+                Exact location not found; showing PIBA bureau weather for{' '}
+                {weather.fallbackLocation}
+                {weather.fallbackBureauCode ? ` (code ${weather.fallbackBureauCode})` : ''}
+              </>
+            )}
+            {weather.fallbackSource === 'search' && (
+              <>Showing weather for closest Israeli match: {weather.fallbackLocation}</>
+            )}
+          </p>
+        )}
 
         {weather && (
           <article className="weather-card">
