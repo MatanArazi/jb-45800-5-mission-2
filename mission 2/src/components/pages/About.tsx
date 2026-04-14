@@ -5,7 +5,7 @@ export default function About() {
       <div className="content-box">
         <p>
           This is a simple weather display app for locations in Israel. Select a city
-          from the list to view the current weather and compare your search history.
+          from the list to view the current weather.
         </p>
         <p>
           The app is built with React, TypeScript, and Vite. Data is fetched from a
@@ -14,7 +14,7 @@ export default function About() {
       </div>
       <h3 className="section-subtitle">Developer details</h3>
       <div className="content-box">
-        <p>Name: Project developer</p>
+        <p>Name: Matan Arazi</p>
         <p>Course: HTML, CSS, TypeScript, React, API, AI</p>
       </div>
     </section>
